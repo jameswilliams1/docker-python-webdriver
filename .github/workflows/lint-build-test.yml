@@ -1,9 +1,9 @@
 ---
-name: Lint Dockerfile, build then test image
+on: push  # yamllint disable-line rule:truthy
+
 env:
   DOCKER_IMAGE: jameswilliams1/python-webdriver
   DOCKER_BUILDKIT: 1
-on: push  # yamllint disable-line rule:truthy
 
 jobs:
   lint: &BASE
