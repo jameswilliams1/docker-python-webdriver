@@ -1,4 +1,5 @@
 ---
+name: Build
 on: push  # yamllint disable-line rule:truthy
 
 env:
@@ -17,7 +18,7 @@ jobs:
         BROWSER:  # all, chrome, firefox
           - all
     env:  # final image name with version tag
-      DOCKER_TAG: ${{ DOCKER_IMAGE }}:${{ matrix.PYTHON }}-${{ matrix.DISTRO }}-${{ matrix.BROWSER }}
+      DOCKER_TAG: ${{ env.DOCKER_IMAGE }}:${{ matrix.PYTHON }}-${{ matrix.DISTRO }}-${{ matrix.BROWSER }}
     steps:
       - uses: actions/checkout@v2
       - name: Lint ${{ env.DOCKER_TAG }} with hadolint
@@ -39,7 +40,7 @@ jobs:
         BROWSER:  # all, chrome, firefox
           - all
     env:  # final image name with version tag
-      DOCKER_TAG: ${{ DOCKER_IMAGE }}:${{ matrix.PYTHON }}-${{ matrix.DISTRO }}-${{ matrix.BROWSER }}
+      DOCKER_TAG: ${{ env.DOCKER_IMAGE }}:${{ matrix.PYTHON }}-${{ matrix.DISTRO }}-${{ matrix.BROWSER }}
     steps:
       - uses: actions/checkout@v2
       - name: Build ${{ env.DOCKER_TAG }}
