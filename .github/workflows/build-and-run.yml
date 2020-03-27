@@ -15,7 +15,7 @@ jobs:
 
       - name: Check the image runs
         run: >-
-          docker run -it --rm test
+          docker run -t --rm test
           google-chrome --version
           && chromedriver --version
           && firefox --version
