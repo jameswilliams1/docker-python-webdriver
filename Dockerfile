@@ -1,6 +1,6 @@
 FROM python:3.7-slim-buster
 
-MAINTAINER James Williams <jamesleighwilliams@gmail.com>
+LABEL maintainer="James Williams <jamesleighwilliams@gmail.com>"
 
 RUN groupadd --system selenium \
     && useradd --gid selenium --shell /bin/bash --system selenium
