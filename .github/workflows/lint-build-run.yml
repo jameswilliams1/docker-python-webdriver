@@ -1,0 +1,35 @@
+---
+on: push  # yamllint disable-line rule:truthy
+  # pull_request:
+  #   types: ['opened', 'edited', 'reopened', 'synchronize']
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        PYTHON:
+          - '3.7'
+        DISTRO:
+          - slim-buster
+        BROWSER:  # all, chrome, firefox
+          - all
+    env:
+      DOCKER_IMAGE: "python-webdriver:\
+      ${{ matrix.PYTHON }}-${{ matrix.DISTRO }}-${{ matrix.BROWSER }}"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: 'Build image: ${{ DOCKER_IMAGE }}'
+        run: >-
+          docker build --no-cache --pull --tag ${{ DOCKER_IMAGE }} .
+
+      - name: Check the image runs
+        run: >-
+          docker run -t --rm ${{ DOCKER_IMAGE }}
+          google-chrome --version
+          && chromedriver --version
+          && firefox --version
+          && geckodriver --version
