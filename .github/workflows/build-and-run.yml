@@ -1,7 +1,7 @@
 ---
-on:  # yamllint disable-line rule:truthy
-  pull_request:
-    types: ['opened', 'edited', 'reopened', 'synchronize']
+on: push  # yamllint disable-line rule:truthy
+  # pull_request:
+  #   types: ['opened', 'edited', 'reopened', 'synchronize']
 
 jobs:
   pr-build:
@@ -15,7 +15,7 @@ jobs:
 
       - name: Check the image runs
         run: >-
-          docker run -it test
+          docker run -it --rm test
           google-chrome --version
           && chromedriver --version
           && firefox --version
