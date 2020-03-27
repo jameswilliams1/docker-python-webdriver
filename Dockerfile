@@ -1,5 +1,7 @@
 FROM python:3.7-slim-buster
 
+MAINTAINER James Williams <jamesleighwilliams@gmail.com>
+
 RUN groupadd --system selenium \
     && useradd --gid selenium --shell /bin/bash --system selenium
 
@@ -24,7 +26,8 @@ RUN ["/bin/bash", "-c", "set -o pipefail && export DEBIAN_FRONTEND=noninteractiv
   && curl -sL \"${CHROME_DOWNLOAD_URL}/direct/google-chrome-stable_current_amd64.deb\" > /tmp/chrome.deb \
   && dpkg -i /tmp/chrome.deb \
   && CHROMIUM_FLAGS='--no-sandbox --disable-dev-shm-usage' \
-  && sed -i '${s/$/'\" $CHROMIUM_FLAGS\"'/}' /opt/google/chrome/google-chrome \
+  && CHROMIUM_OPTIONS_FILE=/opt/google/chrome/google-chrome \
+  && echo \"$(cat ${CHROMIUM_OPTIONS_FILE}) ${CHROMIUM_FLAGS}\" > \"${CHROMIUM_OPTIONS_FILE}\"  \
   && BASE_URL=https://chromedriver.storage.googleapis.com \
   && VERSION=$(curl -sL \"${BASE_URL}/LATEST_RELEASE\") \
   && curl -sL \"${BASE_URL}/${VERSION}/chromedriver_linux64.zip\" -o /tmp/driver.zip \
