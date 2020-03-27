@@ -14,9 +14,7 @@ jobs:
         uses: docker://hadolint/hadolint:latest-debian
         with:
           entrypoint: hadolint
-          args:
-            - --ignore DL3008  # Pin versions in apt get install.
-            - Dockerfile
+          args: --ignore DL3008 Dockerfile  # Pin versions in apt get install.
 
   build:
     needs: lint
