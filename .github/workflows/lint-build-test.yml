@@ -1,8 +1,9 @@
 ---
 name: Build
-on: push  # yamllint disable-line rule:truthy
-paths-ignore:
-  - README.md
+on: # yamllint disable-line rule:truthy
+  push:
+    paths-ignore:
+      - README.md
 
 env:
   DOCKER_IMAGE: jameswilliams1/python-webdriver
