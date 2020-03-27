@@ -37,7 +37,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && apt-get update \
   && CHROME_DOWNLOAD_URL='https://dl.google.com/linux' \
   && curl -sL "${CHROME_DOWNLOAD_URL}/linux_signing_key.pub" | apt-key add - \
   && curl -sL "${CHROME_DOWNLOAD_URL}/direct/google-chrome-stable_current_amd64.deb" > /tmp/chrome.deb \
-  && (dpkg -i /tmp/chrome.deb || apt-get install --fix-broken) \
+  && (dpkg -i /tmp/chrome.deb || apt-get install --no-install-recommends --no-install-suggests --assume-yes --fix-broken) \
   && CHROMIUM_FLAGS='--no-sandbox --disable-dev-shm-usage' \
   && CHROMIUM_OPTIONS_FILE=/opt/google/chrome/google-chrome \
   && echo "$(cat ${CHROMIUM_OPTIONS_FILE}) ${CHROMIUM_FLAGS}" > "${CHROMIUM_OPTIONS_FILE}"  \
