@@ -1,9 +1,21 @@
 ---
+name: Lint Dockerfile, build then test image
+env:
+  DOCKER_IMAGE: jameswilliams1/python-webdriver
+  DOCKER_BUILDKIT: 1
 on: push  # yamllint disable-line rule:truthy
-  # pull_request:
-  #   types: ['opened', 'edited', 'reopened', 'synchronize']
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Lint Dockerfile
+        uses: docker://hadolint/hadolint:latest-alpine
+        with:
+          entrypoint: hadolint
+          args: Dockerfile
+
   build:
     runs-on: ubuntu-latest
     strategy:
@@ -15,20 +27,15 @@ jobs:
         BROWSER:  # all, chrome, firefox
           - all
     env:
-      DOCKER_IMAGE: "python-webdriver:\
-      ${{ matrix.PYTHON }}-${{ matrix.DISTRO }}-${{ matrix.BROWSER }}"
+      DOCKER_TAG: ${{ matrix.PYTHON }}-${{ matrix.DISTRO }}-${{ matrix.BROWSER }}
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: 'Build image: ${{ DOCKER_IMAGE }}'
-        run: >-
-          docker build --no-cache --pull --tag ${{ DOCKER_IMAGE }} .
-
+      - uses: actions/checkout@v2
+      - name: Build ${DOCKER_IMAGE}:${DOCKER_TAG}
+        run: docker build --no-cache --pull --tag ${DOCKER_IMAGE}:${DOCKER_TAG} .
       - name: Check the image runs
         run: >-
-          docker run -t --rm ${{ DOCKER_IMAGE }}
+          docker run -t --rm ${DOCKER_IMAGE}:${DOCKER_TAG}
           google-chrome --version
           && chromedriver --version
           && firefox --version
