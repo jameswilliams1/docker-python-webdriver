@@ -6,7 +6,7 @@ env:
   DOCKER_BUILDKIT: 1
 
 jobs:
-  lint: &BASE
+  lint:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -28,8 +28,18 @@ jobs:
           # args: --ignore DL3008 ./${{ matrix.PYTHON }}/${{ matrix.DISTRO }}/${{ matrix.BROWSER }}/Dockerfile  TODO
 
   build:
-    <<: *BASE
     needs: lint
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        PYTHON:
+          - '3.7'
+        DISTRO:
+          - slim-buster
+        BROWSER:  # all, chrome, firefox
+          - all
+    env:  # final image name with version tag
+      DOCKER_TAG: ${{ DOCKER_IMAGE }}:${{ matrix.PYTHON }}-${{ matrix.DISTRO }}-${{ matrix.BROWSER }}
     steps:
       - uses: actions/checkout@v2
       - name: Build ${{ env.DOCKER_TAG }}
