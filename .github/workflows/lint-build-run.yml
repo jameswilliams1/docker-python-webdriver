@@ -11,12 +11,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Lint Dockerfile
-        uses: docker://hadolint/hadolint:latest-alpine
+        uses: docker://hadolint/hadolint:latest-debian
         with:
           entrypoint: hadolint
           args: Dockerfile
 
   build:
+    needs: lint
     runs-on: ubuntu-latest
     strategy:
       matrix:

@@ -4,7 +4,7 @@ RUN groupadd --system selenium \
     && useradd --gid selenium --shell /bin/bash --system selenium
 
 # Install the latest versions of Mozilla Firefox and Geckodriver
-RUN ["/bin/bash", "-c", "set -o pipefail && DEBIAN_FRONTEND=noninteractive && apt-get update \
+RUN ["/bin/bash", "-c", "set -o pipefail && export DEBIAN_FRONTEND='noninteractive' && apt-get update \
   && apt-get install --no-install-recommends --no-install-suggests -y curl bzip2 libgtk-3-0 libdbus-glib-1-2 \
   && FIREFOX_DOWNLOAD_URL='https://download.mozilla.org/?product=firefox-latest-ssl&os=linux64' \
   && curl -sL $FIREFOX_DOWNLOAD_URL | tar -xj -C /opt \
@@ -17,7 +17,7 @@ RUN ["/bin/bash", "-c", "set -o pipefail && DEBIAN_FRONTEND=noninteractive && ap
 
 # Install the latest versions of Google Chrome and Chromedriver
 # Patches Chrome launch script and appends CHROMIUM_FLAGS to the last line for headless execution
-RUN ["/bin/bash", "-c", "set -o pipefail && DEBIAN_FRONTEND=noninteractive && apt-get update \
+RUN ["/bin/bash", "-c", "set -o pipefail && export DEBIAN_FRONTEND='noninteractive' && apt-get update \
   && apt-get install --no-install-recommends --no-install-suggests -y curl unzip gnupg \
   && CHROME_DOWNLOAD_URL=https://dl.google.com/linux \
   && curl -sL $CHROME_DOWNLOAD_URL/linux_signing_key.pub | apt-key add - \
