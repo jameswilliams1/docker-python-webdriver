@@ -17,11 +17,11 @@ jobs:
           - slim-buster
         BROWSER:  # all, chrome, firefox
           - all
-    env:  # final image name with version tag
-      DOCKER_TAG: ${{ env.DOCKER_IMAGE }}:${{ matrix.PYTHON }}-${{ matrix.DISTRO }}-${{ matrix.BROWSER }}
+    env:
+      DOCKER_TAG: ${{ matrix.PYTHON }}-${{ matrix.DISTRO }}-${{ matrix.BROWSER }}
     steps:
       - uses: actions/checkout@v2
-      - name: Lint ${{ env.DOCKER_TAG }} with hadolint
+      - name: Lint ${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }} with hadolint
         uses: docker://hadolint/hadolint:latest-debian
         with:
           entrypoint: hadolint
@@ -40,14 +40,14 @@ jobs:
         BROWSER:  # all, chrome, firefox
           - all
     env:  # final image name with version tag
-      DOCKER_TAG: ${{ env.DOCKER_IMAGE }}:${{ matrix.PYTHON }}-${{ matrix.DISTRO }}-${{ matrix.BROWSER }}
+      DOCKER_TAG: ${{ matrix.PYTHON }}-${{ matrix.DISTRO }}-${{ matrix.BROWSER }}
     steps:
       - uses: actions/checkout@v2
-      - name: Build ${{ env.DOCKER_TAG }}
-        run: docker build --no-cache --pull --tag ${DOCKER_TAG} .
+      - name: Build ${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }}
+        run: docker build --no-cache --pull --tag ${DOCKER_IMAGE}:${DOCKER_TAG} .
       - name: Check the image runs
         run: >-
-          docker run -t --rm ${DOCKER_TAG}
+          docker run -t --rm ${DOCKER_IMAGE}:${DOCKER_TAG}
           google-chrome --version
           && chromedriver --version
           && firefox --version
