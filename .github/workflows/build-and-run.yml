@@ -8,10 +8,15 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
 
       - name: Build the image
-        run: docker build --no-cache --pull --tag TEST_IMAGE .
+        run: docker build --no-cache --pull --tag test .
 
       - name: Check the image runs
-        run: docker run -it TEST_IMAGE chrome --version && chromedriver --version && firefox --version && geckodriver --version
+        run: >-
+          docker run -it test
+          google-chrome --version
+          && chromedriver --version
+          && firefox --version
+          && geckodriver --version
