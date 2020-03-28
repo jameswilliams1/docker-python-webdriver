@@ -24,7 +24,7 @@ jobs:
           - all
     env:
       DOCKER_TAG: ${{ matrix.PYTHON }}-${{ matrix.DISTRO }}-${{ matrix.BROWSER }}
-      DOCKERFILE: "./${{ matrix.PYTHON }}/${{ matrix.DISTRO }}/\
+      DOCKERFILE_PATH: "./${{ matrix.PYTHON }}/${{ matrix.DISTRO }}/\
       ${{ matrix.BROWSER }}/Dockerfile"
     steps:
       - uses: actions/checkout@v2
@@ -33,7 +33,7 @@ jobs:
         with:
           entrypoint: hadolint
           # Ignore 'pin versions in apt get install'
-          args: --ignore DL3008 ${{ env.DOCKERFILE }}
+          args: --ignore DL3008 ${{ env.DOCKERFILE_PATH }}
 
   build:
     needs: lint
@@ -48,7 +48,7 @@ jobs:
           - all
     env:
       DOCKER_TAG: ${{ matrix.PYTHON }}-${{ matrix.DISTRO }}-${{ matrix.BROWSER }}
-      DOCKERFILE: "./${{ matrix.PYTHON }}/${{ matrix.DISTRO }}/\
+      DOCKERFILE_PATH: "./${{ matrix.PYTHON }}/${{ matrix.DISTRO }}/\
       ${{ matrix.BROWSER }}/Dockerfile"
     steps:
       - uses: actions/checkout@v2
@@ -56,7 +56,7 @@ jobs:
         run: >-
           docker build --no-cache --pull
           --tag ${DOCKER_IMAGE}:${DOCKER_TAG}
-          --file ${DOCKERFILE} .
+          --file ${DOCKERFILE_PATH} .
       - name: Check the image runs
         run: >-
           docker run --tty --rm ${DOCKER_IMAGE}:${DOCKER_TAG}

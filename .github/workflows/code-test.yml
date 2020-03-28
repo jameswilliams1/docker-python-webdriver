@@ -10,7 +10,7 @@ on:  # yamllint disable-line rule:truthy
 
 env:
   # Nothing to do with the images, this is the version used by scripts/linters
-  PYTHON_VERSION: '3.7'
+  PYTHON_VERSION: '3.8'
 
 jobs:
   lint:
