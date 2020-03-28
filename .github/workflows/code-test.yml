@@ -21,8 +21,10 @@ jobs:
         uses: actions/setup-python@v1
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-      - name: Configure system PATH for pipenv
-        run: echo "::add-path::~/.local/bin"
+      - name: Configure the system PATH for local binaries
+        run: |
+          mkdir -p ${HOME}/.local/bin
+          echo "::add-path::${HOME}/.local/bin"
       - run: echo ${PATH} && exit 1
       - name: Cache pipenv
         id: pipenv-cache
@@ -58,8 +60,10 @@ jobs:
         uses: actions/setup-python@v1
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-      - name: Configure system PATH for pipenv
-        run: echo "::add-path::~/.local/bin"
+      - name: Configure the system PATH for local binaries
+        run: |
+          mkdir -p ${HOME}/.local/bin
+          echo "::add-path::${HOME}/.local/bin"
       - name: Cache pipenv
         id: pipenv-cache
         uses: actions/cache@v1
