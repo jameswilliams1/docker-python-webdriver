@@ -34,7 +34,8 @@ jobs:
             ${{ runner.os }}-pipenv-
       - name: Install test dependencies
         run: |
-          pip install --upgrade --user pip pipenv
+          pip install --upgrade --user --no-warn-script-location pip pipenv
+          export PATH=${PATH}:~/.local/bin
           pipenv install --dev
       - name: Run yamllint code linter
         run: pipenv run yamllint --config-file=.yamllint .
@@ -70,7 +71,8 @@ jobs:
             ${{ runner.os }}-pipenv-
       - name: Install test dependencies
         run: |
-          pip install --upgrade --user pip pipenv
+          pip install --upgrade --user --no-warn-script-location pip pipenv
+          export PATH=${PATH}:~/.local/bin
           pipenv install --dev
       - name: Run pytest
         run: pipenv run pytest --cov-config=setup.cfg --cov
