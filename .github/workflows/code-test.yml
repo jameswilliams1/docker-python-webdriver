@@ -22,6 +22,7 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
       - name: Cache pipenv
+        id: pipenv-cache
         uses: actions/cache@v1
         with:
           path: ~/.local/share/virtualenvs
@@ -29,6 +30,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pipenv-
       - name: Install test dependencies
+        if: steps.pipenv-cache.outputs.cache-hit != 'true'
         run: |
           pip install --upgrade pip pipenv
           pipenv install --dev
@@ -53,6 +55,7 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
       - name: Cache pipenv
+        id: pipenv-cache
         uses: actions/cache@v1
         with:
           path: ~/.local/share/virtualenvs
@@ -60,6 +63,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pipenv-
       - name: Install test dependencies
+        if: steps.pipenv-cache.outputs.cache-hit != 'true'
         run: |
           pip install --upgrade pip pipenv
           pipenv install --dev
