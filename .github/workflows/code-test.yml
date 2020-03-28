@@ -21,6 +21,7 @@ jobs:
         uses: actions/setup-python@v1
         with:
           python-version: ${{ env.PYTHON_VERSION }}
+      - run: pip install --upgrade pipenv && which pipenv && exit 1
       - name: Cache python site-packages
         id: site-cache
         uses: actions/cache@v1
