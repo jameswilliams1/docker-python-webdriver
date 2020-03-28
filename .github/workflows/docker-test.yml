@@ -30,9 +30,9 @@ jobs:
         uses: docker://hadolint/hadolint:latest-debian
         with:
           entrypoint: hadolint
-          args: --ignore DL3008 Dockerfile  # Pin versions in apt get install.
-          # args: --ignore DL3008 ./${{ matrix.PYTHON }}/
-          # ${{ matrix.DISTRO }}/${{ matrix.BROWSER }}/Dockerfile  TODO
+          # Ignore 'pin versions in apt get install'
+          args: '--ignore DL3008 ./${{ matrix.PYTHON }}/\
+          ${{ matrix.DISTRO }}/${{ matrix.BROWSER }}/Dockerfile'
 
   build:
     needs: lint
