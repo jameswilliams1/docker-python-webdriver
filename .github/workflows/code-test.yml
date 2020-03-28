@@ -23,8 +23,8 @@ jobs:
       - name: Cache python site packages
         uses: actions/cache@v1
         with:
-          path: ~/.local/lib/${PYTHON_VERSION}/site-packages
-          key: ${{ runner.os }}-site-
+          path: $(python3 -c "import site; print(site.getsitepackages()[0])")
+          key: ${{ runner.os }}-site-packages-
       - name: Cache pipenv
         uses: actions/cache@v1
         with:
@@ -34,8 +34,7 @@ jobs:
             ${{ runner.os }}-pipenv-
       - name: Install test dependencies
         run: |
-          pip install --upgrade --user --no-warn-script-location pip pipenv
-          export PATH=${PATH}:~/.local/bin
+          pip install --upgrade pip pipenv
           pipenv install --dev
       - name: Run yamllint code linter
         run: pipenv run yamllint --config-file=.yamllint .
@@ -60,8 +59,8 @@ jobs:
       - name: Cache python site packages
         uses: actions/cache@v1
         with:
-          path: ~/.local/lib/${PYTHON_VERSION}/site-packages
-          key: ${{ runner.os }}-site-
+          path: $(python3 -c "import site; print(site.getsitepackages()[0])")
+          key: ${{ runner.os }}-site-packages-
       - name: Cache pipenv
         uses: actions/cache@v1
         with:
@@ -71,8 +70,7 @@ jobs:
             ${{ runner.os }}-pipenv-
       - name: Install test dependencies
         run: |
-          pip install --upgrade --user --no-warn-script-location pip pipenv
-          export PATH=${PATH}:~/.local/bin
+          pip install --upgrade pip pipenv
           pipenv install --dev
       - name: Run pytest
         run: pipenv run pytest --cov-config=setup.cfg --cov
