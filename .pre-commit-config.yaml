@@ -55,7 +55,7 @@ repos:
         name: mypy
         description: Run mypy type checking on python files.
         entry: mypy
-        args: [--options=setup.cfg]
+        args: [--config-file=setup.cfg]
         language: python
         types: [python]
 
