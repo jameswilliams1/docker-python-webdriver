@@ -11,7 +11,6 @@ on:  # yamllint disable-line rule:truthy
 env:
   # Nothing to do with the images, this is the version used by scripts/linters
   PYTHON_VERSION: '3.8'
-  PATH: ~/.local/bin:${PATH}
 
 jobs:
   lint:
@@ -22,6 +21,8 @@ jobs:
         uses: actions/setup-python@v1
         with:
           python-version: ${{ env.PYTHON_VERSION }}
+      - name: Configure system PATH for pipenv
+        run: echo "::add-path::~/.local/bin"
       - name: Cache pipenv
         id: pipenv-cache
         uses: actions/cache@v1
@@ -56,6 +57,8 @@ jobs:
         uses: actions/setup-python@v1
         with:
           python-version: ${{ env.PYTHON_VERSION }}
+      - name: Configure system PATH for pipenv
+        run: echo "::add-path::~/.local/bin"
       - name: Cache pipenv
         id: pipenv-cache
         uses: actions/cache@v1
