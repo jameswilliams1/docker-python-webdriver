@@ -21,11 +21,6 @@ jobs:
         uses: actions/setup-python@v1
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-      - name: Cache python site packages
-        uses: actions/cache@v1
-        with:
-          path: ${{ runner.tool_cache }}/Python
-          key: ${{ runner.os }}-site-packages-
       - name: Cache pipenv
         uses: actions/cache@v1
         with:
@@ -57,11 +52,6 @@ jobs:
         uses: actions/setup-python@v1
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-      - name: Cache python site packages
-        uses: actions/cache@v1
-        with:
-          path: ${{ runner.tool_cache }}/Python
-          key: ${{ runner.os }}-site-packages-
       - name: Cache pipenv
         uses: actions/cache@v1
         with:
