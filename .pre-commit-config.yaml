@@ -38,7 +38,7 @@ repos:
         name: black
         description: Run Black code formatting on python files.
         entry: black
-        args: [--options=pyproject.toml]
+        args: [--config=pyproject.toml]
         require_serial: true
         language: system
         types: [python]

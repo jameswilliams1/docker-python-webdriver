@@ -37,7 +37,7 @@ jobs:
       - name: Run isort import sorter
         run: pipenv run isort --settings-path=setup.cfg --check-only --diff
       - name: Run black code formatter
-        run: pipenv run black --options=pyproject.toml --check --diff .
+        run: pipenv run black --config=pyproject.toml --check --diff .
       - name: Run pylama code linter
         run: pipenv run pylama --options=setup.cfg .
       - name: Run mypy type checker
