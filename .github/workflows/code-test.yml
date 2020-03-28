@@ -26,6 +26,7 @@ jobs:
           mkdir -p ${HOME}/.local/bin
           echo "::add-path::${HOME}/.local/bin"
       - run: |
+          echo ${pythonLocation} && exit 1
           ls ${HOME}/.local
           ls ${HOME}/.local/bin
           ls ${HOME}/.local/lib && exit 1
