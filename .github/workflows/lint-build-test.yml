@@ -1,9 +1,10 @@
 ---
+# Lint and test Dockerfiles
 name: Build
 on:  # yamllint disable-line rule:truthy
   push:
-    paths-ignore:
-      - README.md
+    paths:
+      - '**/Dockerfile'
 
 env:
   DOCKER_IMAGE: jameswilliams1/python-webdriver
