@@ -25,6 +25,10 @@ jobs:
         run: |
           mkdir -p ${HOME}/.local/bin
           echo "::add-path::${HOME}/.local/bin"
+      - run: |
+          ls ${HOME}/.local
+          ls ${HOME}/.local/bin
+          ls ${HOME}/.local/lib && exit 1
       - name: Cache pipenv
         id: pipenv-cache
         uses: actions/cache@v1
