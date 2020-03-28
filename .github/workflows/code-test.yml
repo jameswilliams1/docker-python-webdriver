@@ -11,6 +11,7 @@ on:  # yamllint disable-line rule:truthy
 env:
   # Nothing to do with the images, this is the version used by scripts/linters
   PYTHON_VERSION: '3.8'
+  PATH: ~/.local/bin:${PATH}
 
 jobs:
   lint:
@@ -25,14 +26,15 @@ jobs:
         id: pipenv-cache
         uses: actions/cache@v1
         with:
-          path: ~/.local/share/virtualenvs
+          path: ~/.local
+          # path: ~/.local/share/virtualenvs
           key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
           restore-keys: |
             ${{ runner.os }}-pipenv-
       - name: Install test dependencies
         if: steps.pipenv-cache.outputs.cache-hit != 'true'
         run: |
-          pip install --upgrade pip pipenv
+          pip install --upgrade --user pipenv
           pipenv install --dev
       - name: Run yamllint code linter
         run: pipenv run yamllint --config-file=.yamllint .
@@ -58,14 +60,15 @@ jobs:
         id: pipenv-cache
         uses: actions/cache@v1
         with:
-          path: ~/.local/share/virtualenvs
+          path: ~/.local
+          # path: ~/.local/share/virtualenvs
           key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
           restore-keys: |
             ${{ runner.os }}-pipenv-
       - name: Install test dependencies
         if: steps.pipenv-cache.outputs.cache-hit != 'true'
         run: |
-          pip install --upgrade pip pipenv
+          pip install --upgrade --user pipenv
           pipenv install --dev
       - name: Run pytest
         run: pipenv run pytest --cov-config=setup.cfg --cov
