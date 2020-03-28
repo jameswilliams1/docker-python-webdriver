@@ -1,5 +1,6 @@
 ---
-exclude: .git|.tox|docs|build|dist
+exclude: >-  # Git, venv and compiled package directories
+  (^|/)\.git($|/)|(^|/)\.tox($|/)|^docs($|/)|(^|/)build($|/)|(^|/)dist($|/)
 default_stages: [commit]
 fail_fast: true
 
@@ -27,7 +28,7 @@ repos:
     hooks:
       - id: isort
         name: isort
-        description: Run isort import sorter on python files.
+        description: Run isort import sorting on python files.
         entry: isort
         args: [--settings-path=setup.cfg]
         language: python
@@ -35,7 +36,7 @@ repos:
 
       - id: black
         name: black
-        description: Run Black code formatter on python files.
+        description: Run Black code formatting on python files.
         entry: black
         args: [--options=pyproject.toml]
         require_serial: true
@@ -44,7 +45,7 @@ repos:
 
       - id: pylama
         name: pylama
-        description: Run pylama code linter on python files.
+        description: Run pylama code linting on python files.
         entry: pylama
         args: [--options=setup.cfg]
         language: python
@@ -57,3 +58,11 @@ repos:
         args: [--options=setup.cfg]
         language: python
         types: [python]
+
+      - id: yamllint
+        name: yamllint
+        description: Run yamllint code linting on yaml files.
+        entry: yamllint
+        args: [--config-file=.yamllint]
+        language: python
+        types: [yaml]

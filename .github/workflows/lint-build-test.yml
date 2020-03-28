@@ -1,6 +1,6 @@
 ---
 name: Build
-on: # yamllint disable-line rule:truthy
+on:  # yamllint disable-line rule:truthy
   push:
     paths-ignore:
       - README.md
@@ -29,7 +29,8 @@ jobs:
         with:
           entrypoint: hadolint
           args: --ignore DL3008 Dockerfile  # Pin versions in apt get install.
-          # args: --ignore DL3008 ./${{ matrix.PYTHON }}/${{ matrix.DISTRO }}/${{ matrix.BROWSER }}/Dockerfile  TODO
+          # args: --ignore DL3008 ./${{ matrix.PYTHON }}/
+          # ${{ matrix.DISTRO }}/${{ matrix.BROWSER }}/Dockerfile  TODO
 
   build:
     needs: lint

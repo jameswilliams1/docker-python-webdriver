@@ -4,3 +4,7 @@ rules:
   line-length:
     max: 88
     level: error
+  octal-values:
+    forbid-implicit-octal: true
+  truthy:
+    level: error
