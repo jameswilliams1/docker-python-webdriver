@@ -1,9 +1,11 @@
 ---
-name: Lint, build and test Dockerfiles
+# Lint, build and test Dockerfiles
+name: Build
 on:  # yamllint disable-line rule:truthy
   push:
     paths:
-      - '**/Dockerfile'
+      - '**/Dockerfile'  # run on any change to a Dockerfile anywhere in repo
+      - '**/docker-test.yml'  # also re-run on changes to CI
 
 env:
   DOCKER_IMAGE: jameswilliams1/python-webdriver
