@@ -33,13 +33,13 @@ jobs:
           pip install --upgrade pip pipenv
           pipenv install --dev
       - name: Run yamllint code linter
-        run: pipenv run yamllint --config-file=.yamllint
+        run: pipenv run yamllint --config-file=.yamllint .
       - name: Run isort import sorter
         run: pipenv run isort --settings-path=setup.cfg --check-only --diff
       - name: Run black code formatter
-        run: pipenv run black --options=pyproject.toml --check --diff
+        run: pipenv run black --options=pyproject.toml --check --diff .
       - name: Run pylama code linter
-        run: pipenv run pylama --options=setup.cfg
+        run: pipenv run pylama --options=setup.cfg .
       - name: Run mypy type checker
         run: pipenv run mypy --config-file=setup.cfg .
 
