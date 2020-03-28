@@ -33,7 +33,7 @@ jobs:
         with:
           entrypoint: hadolint
           # Ignore 'pin versions in apt get install'
-          args: '--ignore DL3008 ${DOCKERFILE}'
+          args: --ignore DL3008 ${DOCKERFILE}
 
   build:
     needs: lint
@@ -44,9 +44,9 @@ jobs:
           - '3.7'
         DISTRO:
           - slim-buster
-        BROWSER:  # all, chrome, firefox
+        BROWSER:
           - all
-    env:  # final image name with version tag
+    env:
       DOCKER_TAG: ${{ matrix.PYTHON }}-${{ matrix.DISTRO }}-${{ matrix.BROWSER }}
       DOCKERFILE: "./${{ matrix.PYTHON }}/${{ matrix.DISTRO }}/\
       ${{ matrix.BROWSER }}/Dockerfile"
