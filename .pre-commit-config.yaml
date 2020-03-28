@@ -1,5 +1,5 @@
 ---
-exclude: docs|.git|.tox|build|dist
+exclude: .git|.tox|docs|build|dist
 default_stages: [commit]
 fail_fast: true
 
@@ -8,7 +8,7 @@ repos:
     rev: master
     hooks:
       - id: trailing-whitespace
-        description: Trim trailing whitespace on all files (excluding markdown).
+        description: Trim trailing whitespace on non-markdown files.
         args: [--markdown-linebreak-ext=md]
 
       - id: mixed-line-ending
@@ -19,17 +19,17 @@ repos:
     rev: master
     hooks:
       - id: seed-isort-config
-        description: Populate isort:'known_third_party' in setup.cfg.
+        description: Populate isort 'known_third_party' packages in setup.cfg.
 
   - repo: local
-    # Most of these have hooks available, but better to use local versions
-    # This way local and CI/CD linter versions will always match
+    # Most of these have hooks available, but it's better to use local versions
+    # This way pip, pre-commit and CI/CD linter versions will always match
     hooks:
       - id: isort
         name: isort
         description: Run isort import sorter on python files.
         entry: isort
-        require_serial: true
+        args: [--settings-path=setup.cfg]
         language: python
         types: [python]
 
@@ -37,14 +37,16 @@ repos:
         name: black
         description: Run Black code formatter on python files.
         entry: black
-        language: system
+        args: [--options=pyproject.toml]
         require_serial: true
+        language: system
         types: [python]
 
       - id: pylama
         name: pylama
         description: Run pylama code linter on python files.
         entry: pylama
+        args: [--options=setup.cfg]
         language: python
         types: [python]
 
@@ -52,5 +54,6 @@ repos:
         name: mypy
         description: Run mypy type checking on python files.
         entry: mypy
+        args: [--options=setup.cfg]
         language: python
         types: [python]
