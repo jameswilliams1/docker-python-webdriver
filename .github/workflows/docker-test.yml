@@ -33,7 +33,7 @@ jobs:
         with:
           entrypoint: hadolint
           # Ignore 'pin versions in apt get install'
-          args: --ignore DL3008 ${DOCKERFILE}
+          args: --ignore DL3008 ${{ env.DOCKERFILE }}
 
   build:
     needs: lint
