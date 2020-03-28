@@ -1,5 +1,6 @@
 ---
-name: Lint and test config and code files
+# lint and test config and code files
+name: Code
 on:  # yamllint disable-line rule:truthy
   push:
   # paths:
@@ -23,7 +24,7 @@ jobs:
       - name: Cache python site packages
         uses: actions/cache@v1
         with:
-          path: ${{ python -c 'import site; print(site.getsitepackages()[0])' }}
+          path: ${{ runner.tool_cache }}/Python
           key: ${{ runner.os }}-site-packages-
       - name: Cache pipenv
         uses: actions/cache@v1
@@ -59,7 +60,7 @@ jobs:
       - name: Cache python site packages
         uses: actions/cache@v1
         with:
-          path: ${{ python -c 'import site; print(site.getsitepackages()[0])' }}
+          path: ${{ runner.tool_cache }}/Python
           key: ${{ runner.os }}-site-packages-
       - name: Cache pipenv
         uses: actions/cache@v1
