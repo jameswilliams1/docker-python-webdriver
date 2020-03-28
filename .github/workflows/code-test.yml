@@ -23,6 +23,7 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
       - name: Configure system PATH for pipenv
         run: echo "::add-path::~/.local/bin"
+      - run: echo ${PATH} && exit 1
       - name: Cache pipenv
         id: pipenv-cache
         uses: actions/cache@v1
