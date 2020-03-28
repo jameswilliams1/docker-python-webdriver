@@ -23,7 +23,7 @@ jobs:
       - name: Cache python site packages
         uses: actions/cache@v1
         with:
-          path: $(python3 -c "import site; print(site.getsitepackages()[0])")
+          path: "$(python -c 'import site; print(site.getsitepackages()[0])')"
           key: ${{ runner.os }}-site-packages-
       - name: Cache pipenv
         uses: actions/cache@v1
@@ -59,7 +59,7 @@ jobs:
       - name: Cache python site packages
         uses: actions/cache@v1
         with:
-          path: $(python3 -c "import site; print(site.getsitepackages()[0])")
+          path: "$(python -c 'import site; print(site.getsitepackages()[0])')"
           key: ${{ runner.os }}-site-packages-
       - name: Cache pipenv
         uses: actions/cache@v1
