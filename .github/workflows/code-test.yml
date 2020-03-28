@@ -21,29 +21,24 @@ jobs:
         uses: actions/setup-python@v1
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-      - name: Configure the system PATH for local binaries
-        run: |
-          mkdir -p ${HOME}/.local/bin
-          echo "::add-path::${HOME}/.local/bin"
-      - run: |
-          echo ${pythonLocation} && exit 1
-          ls ${HOME}/.local
-          ls ${HOME}/.local/bin
-          ls ${HOME}/.local/lib && exit 1
-      - name: Cache pipenv
+      - name: Cache python site-packages
+        id: site-cache
+        uses: actions/cache@v1
+        with:
+          path: ${{ env.pythonLocation }}/${{ env.PYTHON_VERSION }}/site-packages
+          key: ${{ runner.os }}-site-${{ hashFiles('/usr/local/bin/pipenv') }}
+      - name: Cache pipenv virtualenvs
         id: pipenv-cache
         uses: actions/cache@v1
         with:
-          path: ~/.local
-          # path: ~/.local/share/virtualenvs
+          path: ~/.local/share/virtualenvs
           key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-pipenv-
+      - name: Install pipenv
+        if: steps.site-cache.outputs.cache-hit != 'true'
+        run: pip install --upgrade pipenv
       - name: Install test dependencies
         if: steps.pipenv-cache.outputs.cache-hit != 'true'
-        run: |
-          pip install --upgrade --user pipenv
-          pipenv install --dev
+        run: pipenv install --dev
       - name: Run yamllint code linter
         run: pipenv run yamllint --config-file=.yamllint .
       - name: Run isort import sorter
@@ -64,23 +59,23 @@ jobs:
         uses: actions/setup-python@v1
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-      - name: Configure the system PATH for local binaries
-        run: |
-          mkdir -p ${HOME}/.local/bin
-          echo "::add-path::${HOME}/.local/bin"
-      - name: Cache pipenv
+      - name: Cache python site-packages
+        id: site-cache
+        uses: actions/cache@v1
+        with:
+          path: ${{ env.pythonLocation }}/${{ env.PYTHON_VERSION }}/site-packages
+          key: ${{ runner.os }}-site-${{ hashFiles('/usr/local/bin/pipenv') }}
+      - name: Cache pipenv virtualenvs
         id: pipenv-cache
         uses: actions/cache@v1
         with:
-          path: ~/.local
-          # path: ~/.local/share/virtualenvs
+          path: ~/.local/share/virtualenvs
           key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-pipenv-
+      - name: Install pipenv
+        if: steps.site-cache.outputs.cache-hit != 'true'
+        run: pip install --upgrade pipenv
       - name: Install test dependencies
         if: steps.pipenv-cache.outputs.cache-hit != 'true'
-        run: |
-          pip install --upgrade --user pipenv
-          pipenv install --dev
+        run: pipenv install --dev
       - name: Run pytest
         run: pipenv run pytest --cov-config=setup.cfg --cov
