@@ -21,13 +21,13 @@ jobs:
         uses: actions/setup-python@v1
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-      - run: pip install --upgrade pipenv && which pipenv && exit 1
       - name: Cache python site-packages
         id: site-cache
         uses: actions/cache@v1
         with:
           path: ${{ env.pythonLocation }}/${{ env.PYTHON_VERSION }}/site-packages
-          key: ${{ runner.os }}-site-${{ hashFiles('/usr/local/bin/pipenv') }}
+          key: "${{ runner.os }}-site-\
+          ${{ hashFiles('${{ env.pythonLocation }}/bin/pipenv') }}"
       - name: Cache pipenv virtualenvs
         id: pipenv-cache
         uses: actions/cache@v1
@@ -65,7 +65,8 @@ jobs:
         uses: actions/cache@v1
         with:
           path: ${{ env.pythonLocation }}/${{ env.PYTHON_VERSION }}/site-packages
-          key: ${{ runner.os }}-site-${{ hashFiles('/usr/local/bin/pipenv') }}
+          key: "${{ runner.os }}-site-\
+          ${{ hashFiles('${{ env.pythonLocation }}/bin/pipenv') }}"
       - name: Cache pipenv virtualenvs
         id: pipenv-cache
         uses: actions/cache@v1
