@@ -65,4 +65,4 @@ jobs:
           pip install --upgrade pip pipenv
           pipenv install --dev
       - name: Run pytest
-        run: pytest --cov-config=setup.cfg --cov
+        run: pipenv run pytest --cov-config=setup.cfg --cov
