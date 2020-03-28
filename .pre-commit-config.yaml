@@ -1,5 +1,5 @@
 ---
-exclude: 'docs|.git|.tox'
+exclude: docs|.git|.tox|build|dist
 default_stages: [commit]
 fail_fast: true
 
@@ -8,29 +8,49 @@ repos:
     rev: master
     hooks:
       - id: trailing-whitespace
-        name: Trim trailing whitespace on files, excluding markdown.
+        description: Trim trailing whitespace on all files (excluding markdown).
         args: [--markdown-linebreak-ext=md]
-      - id: mixed-line-ending
-        name: Remove windows line endings from all files.
-        args: [--fix=lf]
 
-  - repo: local
-    hooks:
-      - id: pylama
-        name: pylama
-        description: Run pylama linter on python files.
-        entry: pylama
-        language: python
-        types: ["python"]
+      - id: mixed-line-ending
+        description: Remove Windows line endings from all files.
+        args: [--fix=lf]
 
   - repo: https://github.com/asottile/seed-isort-config
     rev: master
     hooks:
       - id: seed-isort-config
-        name: Populate isort:'known_third_party' in setup.cfg.
+        description: Populate isort:'known_third_party' in setup.cfg.
 
-  - repo: https://github.com/timothycrosley/isort
-    rev: master
+  - repo: local
+    # Most of these have hooks available, but better to use local versions
+    # This way local and CI/CD linter versions will always match
     hooks:
       - id: isort
-        name: Run iSort on python files.
+        name: isort
+        description: Run isort import sorter on python files.
+        entry: isort
+        require_serial: true
+        language: python
+        types: [python]
+
+      - id: black
+        name: black
+        description: Run Black code formatter on python files.
+        entry: black
+        language: system
+        require_serial: true
+        types: [python]
+
+      - id: pylama
+        name: pylama
+        description: Run pylama code linter on python files.
+        entry: pylama
+        language: python
+        types: [python]
+
+      - id: mypy
+        name: mypy
+        description: Run mypy type checking on python files.
+        entry: mypy
+        language: python
+        types: [python]
