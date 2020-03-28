@@ -20,8 +20,12 @@ jobs:
         uses: actions/setup-python@v1
         with:
           python-version: ${{ env.PYTHON_VERSION }}
+      - name: Cache pip
+        uses: actions/cache@v1
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-
       - name: Cache pipenv
-        id: pipenv-cache
         uses: actions/cache@v1
         with:
           path: ~/.local/share/virtualenvs
@@ -52,8 +56,12 @@ jobs:
         uses: actions/setup-python@v1
         with:
           python-version: ${{ env.PYTHON_VERSION }}
+      - name: Cache pip
+        uses: actions/cache@v1
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-
       - name: Cache pipenv
-        id: pipenv-cache
         uses: actions/cache@v1
         with:
           path: ~/.local/share/virtualenvs
