@@ -20,6 +20,7 @@ jobs:
         uses: actions/setup-python@v1
         with:
           python-version: ${{ env.PYTHON_VERSION }}
+      - run: echo ${RUNNER_TOOL_CACHE} && exit 1
       - name: Cache python site packages
         uses: actions/cache@v1
         with:
