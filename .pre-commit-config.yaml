@@ -1,0 +1,36 @@
+---
+exclude: 'docs|.git|.tox'
+default_stages: [commit]
+fail_fast: true
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: master
+    hooks:
+      - id: trailing-whitespace
+        name: Trim trailing whitespace on files, excluding markdown.
+        args: [--markdown-linebreak-ext=md]
+      - id: mixed-line-ending
+        name: Remove windows line endings from all files.
+        args: [--fix=lf]
+
+  - repo: local
+    hooks:
+      - id: pylama
+        name: pylama
+        description: Run pylama linter on python files.
+        entry: pylama
+        language: python
+        types: ["python"]
+
+  - repo: https://github.com/asottile/seed-isort-config
+    rev: master
+    hooks:
+      - id: seed-isort-config
+        name: Populate isort:'known_third_party' in setup.cfg.
+
+  - repo: https://github.com/timothycrosley/isort
+    rev: master
+    hooks:
+      - id: isort
+        name: Run iSort on python files.
