@@ -1,6 +1,5 @@
 ---
-# Lint, build and test Dockerfiles
-name: Build
+name: Lint, build and test Dockerfiles
 on:  # yamllint disable-line rule:truthy
   push:
     paths:
