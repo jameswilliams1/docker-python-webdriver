@@ -31,8 +31,8 @@ jobs:
         with:
           entrypoint: hadolint
           # Ignore 'pin versions in apt get install'
-          args: '--ignore DL3008 ./${{ matrix.PYTHON }}/\
-          ${{ matrix.DISTRO }}/${{ matrix.BROWSER }}/Dockerfile'
+          args: "--ignore DL3008 ./${{ matrix.PYTHON }}/\
+          ${{ matrix.DISTRO }}/${{ matrix.BROWSER }}/Dockerfile"
 
   build:
     needs: lint
