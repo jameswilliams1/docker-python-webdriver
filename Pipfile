@@ -12,6 +12,7 @@ pytest = "*"
 pytest-cov = "*"
 pre-commit = "*"
 mypy = "*"
+testinfra = "*"
 
 [packages]
 
