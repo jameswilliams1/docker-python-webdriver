@@ -25,7 +25,7 @@ jobs:
         id: site-cache
         uses: actions/cache@v1
         with:
-          path: ${{ env.pythonLocation }}/${{ env.PYTHON_VERSION }}/site-packages
+          path: ${{ env.pythonLocation }}/lib/${{ env.PYTHON_VERSION }}/site-packages
           key: ${{ runner.os }}-site-packages-${{ hashFiles('**/Pipfile.lock') }}
       - name: Cache pipenv virtualenvs
         id: pipenv-cache
@@ -39,7 +39,6 @@ jobs:
       - name: Install test dependencies
         if: steps.pipenv-cache.outputs.cache-hit != 'true'
         run: pipenv install --dev
-      - run: python -m site && exit 1
       - name: Run yamllint code linter
         run: pipenv run yamllint --config-file=.yamllint .
       - name: Run isort import sorter
@@ -64,7 +63,7 @@ jobs:
         id: site-cache
         uses: actions/cache@v1
         with:
-          path: ${{ env.pythonLocation }}/${{ env.PYTHON_VERSION }}/site-packages
+          path: ${{ env.pythonLocation }}/lib/${{ env.PYTHON_VERSION }}/site-packages
           key: ${{ runner.os }}-site-packages-${{ hashFiles('**/Pipfile.lock') }}
       - name: Cache pipenv virtualenvs
         id: pipenv-cache
