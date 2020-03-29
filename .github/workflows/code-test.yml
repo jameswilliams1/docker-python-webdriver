@@ -26,8 +26,7 @@ jobs:
         uses: actions/cache@v1
         with:
           path: ${{ env.pythonLocation }}/${{ env.PYTHON_VERSION }}/site-packages
-          key: "${{ runner.os }}-site-\
-          ${{ hashFiles('${{ env.pythonLocation }}/bin/pipenv') }}"
+          key: ${{ runner.os }}-site-${{ hashFiles('**/Pipfile.lock') }}
       - name: Cache pipenv virtualenvs
         id: pipenv-cache
         uses: actions/cache@v1
@@ -65,8 +64,7 @@ jobs:
         uses: actions/cache@v1
         with:
           path: ${{ env.pythonLocation }}/${{ env.PYTHON_VERSION }}/site-packages
-          key: "${{ runner.os }}-site-\
-          ${{ hashFiles('${{ env.pythonLocation }}/bin/pipenv') }}"
+          key: ${{ runner.os }}-site-${{ hashFiles('**/Pipfile.lock') }}
       - name: Cache pipenv virtualenvs
         id: pipenv-cache
         uses: actions/cache@v1
