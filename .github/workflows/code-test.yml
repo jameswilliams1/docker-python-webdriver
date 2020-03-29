@@ -39,6 +39,7 @@ jobs:
       - name: Install test dependencies
         if: steps.pipenv-cache.outputs.cache-hit != 'true'
         run: pipenv install --dev
+      - run: which pipenv && exit 1
       - name: Run yamllint code linter
         run: pipenv run yamllint --config-file=.yamllint .
       - name: Run isort import sorter
