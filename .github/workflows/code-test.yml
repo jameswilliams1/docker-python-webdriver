@@ -21,12 +21,11 @@ jobs:
         uses: actions/setup-python@v1
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-      - name: Cache python site-packages
-        id: site-cache
+      - name: Cache pip downloads
         uses: actions/cache@v1
         with:
-          path: ${{ env.pythonLocation }}/lib/${{ env.PYTHON_VERSION }}/site-packages
-          key: ${{ runner.os }}-site-packages-${{ hashFiles('**/Pipfile.lock') }}
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/Pipfile.lock') }}
       - name: Cache pipenv virtualenvs
         id: pipenv-cache
         uses: actions/cache@v1
@@ -34,7 +33,6 @@ jobs:
           path: ~/.local/share/virtualenvs
           key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
       - name: Install pipenv
-        if: steps.site-cache.outputs.cache-hit != 'true'
         run: pip install --upgrade pipenv
       - name: Install test dependencies
         if: steps.pipenv-cache.outputs.cache-hit != 'true'
@@ -59,12 +57,11 @@ jobs:
         uses: actions/setup-python@v1
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-      - name: Cache python site-packages
-        id: site-cache
+      - name: Cache pip downloads
         uses: actions/cache@v1
         with:
-          path: ${{ env.pythonLocation }}/lib/${{ env.PYTHON_VERSION }}/site-packages
-          key: ${{ runner.os }}-site-packages-${{ hashFiles('**/Pipfile.lock') }}
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/Pipfile.lock') }}
       - name: Cache pipenv virtualenvs
         id: pipenv-cache
         uses: actions/cache@v1
@@ -72,7 +69,6 @@ jobs:
           path: ~/.local/share/virtualenvs
           key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
       - name: Install pipenv
-        if: steps.site-cache.outputs.cache-hit != 'true'
         run: pip install --upgrade pipenv
       - name: Install test dependencies
         if: steps.pipenv-cache.outputs.cache-hit != 'true'
