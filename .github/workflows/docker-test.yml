@@ -65,8 +65,8 @@ jobs:
         run: >-
           mkdir -p "${BUILD_PATH}"
           && docker save
-            --output "${BUILD_PATH}/${DOCKER_TAG}.tar"
-            "${DOCKER_IMAGE}:${DOCKER_TAG}"
+          --output "${BUILD_PATH}/${DOCKER_TAG}.tar"
+          "${DOCKER_IMAGE}:${DOCKER_TAG}"
           && docker images
       - name: Upload tarball of ${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }}
         uses: actions/upload-artifact@v1
