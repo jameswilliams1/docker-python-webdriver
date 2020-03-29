@@ -63,8 +63,7 @@ jobs:
           && geckodriver --version
       - name: Save bz2 archive of ${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }}
         run: >-
-          set -euo pipefail
-          && mkdir -p "${BUILD_PATH}"
+          mkdir -p "${BUILD_PATH}"
           && docker save "${DOCKER_IMAGE}:${DOCKER_TAG}" | bzip2
           --stdout --quiet > "${BUILD_PATH}/${DOCKER_TAG}.tar.bz2"
           && docker images
@@ -111,8 +110,6 @@ jobs:
           name: docker-image-${{ env.DOCKER_TAG }}
           path: ${{ env.BUILD_PATH }}
       - name: Load ${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }}
-        run: >-
-          set -euo pipefail
-          && bunzip2 "${BUILD_PATH}/${DOCKER_TAG}.tar.bz2" | docker load
+        run: bunzip2 --stdout "${BUILD_PATH}/${DOCKER_TAG}.tar.bz2" | docker load
       - name: Run tests for ${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }}
         run: pipenv run python verify_image.py
