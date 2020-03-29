@@ -5,23 +5,23 @@ on:  # yamllint disable-line rule:truthy
   push:
     paths:
       - '**/Dockerfile'  # run on any change to a Dockerfile anywhere in repo
-      - '**/docker-test.yml'  # also re-run on changes to CI
+      - '**/docker-test.yml'  # changes to this workflow
+      - '**/verify_image.py'  # changes to the verify script
 
 env:
   DOCKER_IMAGE: jameswilliams1/python-webdriver
   DOCKER_BUILDKIT: 1
+  BUILD_PATH: ./build/images  # directory for saving tarballs of images
+  PYTHON_VERSION: '3.8'  # Not used in the images, version used by verify script
 
 jobs:
   lint:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        PYTHON:
-          - '3.7'
-        DISTRO:
-          - slim-buster
-        BROWSER:  # all, chrome, firefox
-          - all
+        PYTHON: ['3.7']
+        DISTRO: [slim-buster]
+        BROWSER: [all]
     env:
       DOCKER_TAG: ${{ matrix.PYTHON }}-${{ matrix.DISTRO }}-${{ matrix.BROWSER }}
       DOCKERFILE_PATH: "./${{ matrix.PYTHON }}/${{ matrix.DISTRO }}/\
@@ -40,12 +40,9 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        PYTHON:
-          - '3.7'
-        DISTRO:
-          - slim-buster
-        BROWSER:
-          - all
+        PYTHON: ['3.7']
+        DISTRO: [slim-buster]
+        BROWSER: [all]
     env:
       DOCKER_TAG: ${{ matrix.PYTHON }}-${{ matrix.DISTRO }}-${{ matrix.BROWSER }}
       DOCKERFILE_PATH: "./${{ matrix.PYTHON }}/${{ matrix.DISTRO }}/\
@@ -64,3 +61,56 @@ jobs:
           && chromedriver --version
           && firefox --version
           && geckodriver --version
+      - name: Save tarball of ${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }}
+        run: >-
+          mkdir -p "${BUILD_PATH}"
+          && docker save
+            --output "${BUILD_PATH}/${DOCKER_TAG}.tar"
+            "${DOCKER_IMAGE}:${DOCKER_TAG}"
+          && docker images
+      - name: Upload tarball of ${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }}
+        uses: actions/upload-artifact@v1
+        with:
+          name: docker-image-${{ env.DOCKER_TAG }}
+          path: ${{ env.BUILD_PATH }}
+  verify:
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        PYTHON: ['3.7']
+        DISTRO: [slim-buster]
+        BROWSER: [all]
+    env:
+      DOCKER_TAG: ${{ matrix.PYTHON }}-${{ matrix.DISTRO }}-${{ matrix.BROWSER }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Cache pip downloads
+        uses: actions/cache@v1
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/Pipfile.lock') }}
+      - name: Cache pipenv virtualenvs
+        id: pipenv-cache
+        uses: actions/cache@v1
+        with:
+          path: ~/.local/share/virtualenvs
+          key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
+      - name: Install pipenv
+        run: pip install --upgrade pipenv
+      - name: Install test dependencies
+        if: steps.pipenv-cache.outputs.cache-hit != 'true'
+        run: pipenv install --dev
+      - name: Download tarball of ${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }}
+        uses: actions/download-artifact@v1
+        with:
+          name: docker-image-${{ env.DOCKER_TAG }}
+          path: ${{ env.BUILD_PATH }}
+      - name: Load ${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }}
+        run: docker load --input "${BUILD_PATH}/${DOCKER_TAG}.tar"
+      - name: Run tests for ${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }}
+        run: pipenv run python verify_image.py
