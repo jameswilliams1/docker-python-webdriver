@@ -1,0 +1,146 @@
+---
+# Lint, build and test Dockerfiles, also deploy to Dockerhub if branch is master.
+name: Build
+on:  # yamllint disable-line rule:truthy
+  pull_request:  # TODO types
+  push:  # immediately when a new tag is pushed to master
+    branches: master
+    tags: '*'
+  schedule:  # 6:10am every day on master
+    - cron: '10 06 * * *'
+
+env:
+  DOCKER_IMAGE: jameswilliams1/python-webdriver
+  DOCKER_BUILDKIT: 1
+  BUILD_PATH: ./build/images  # directory for saving tarballs of images
+  PYTHON_VERSION: '3.8'  # Not used in the images, version used by verify script
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        PYTHON: ['3.7']
+        DISTRO: [slim-buster]
+        BROWSER: [all]
+    env:
+      DOCKER_TAG: ${{ matrix.PYTHON }}-${{ matrix.DISTRO }}-${{ matrix.BROWSER }}
+      DOCKERFILE_PATH: "./${{ matrix.PYTHON }}/${{ matrix.DISTRO }}/\
+      ${{ matrix.BROWSER }}/Dockerfile"
+    steps:
+      - uses: actions/checkout@v2
+      - name: Lint ${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }} with hadolint
+        uses: docker://hadolint/hadolint:latest-debian
+        with:
+          entrypoint: hadolint
+          # TODO move ignore rules to config file
+          # Ignore DL3008: 'pin versions in apt get install'
+          args: --ignore DL3008 ${{ env.DOCKERFILE_PATH }}
+
+  build:
+    needs: lint
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        PYTHON: ['3.7']
+        DISTRO: [slim-buster]
+        BROWSER: [all]
+    env:
+      DOCKER_TAG: ${{ matrix.PYTHON }}-${{ matrix.DISTRO }}-${{ matrix.BROWSER }}
+      DOCKERFILE_PATH: "./${{ matrix.PYTHON }}/${{ matrix.DISTRO }}/\
+      ${{ matrix.BROWSER }}/Dockerfile"
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build ${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }}
+        run: >-
+          docker build --no-cache --pull
+          --tag ${DOCKER_IMAGE}:${DOCKER_TAG}
+          --file ${DOCKERFILE_PATH} .
+      - name: Check the image runs
+        run: >-
+          docker run --tty --rm ${DOCKER_IMAGE}:${DOCKER_TAG}
+          google-chrome --version
+          && chromedriver --version
+          && firefox --version
+          && geckodriver --version
+      - name: Save bz2 archive of ${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }}
+        run: >-
+          mkdir -p "${BUILD_PATH}"
+          && docker save "${DOCKER_IMAGE}:${DOCKER_TAG}" | bzip2
+          --stdout --quiet > "${BUILD_PATH}/${DOCKER_TAG}.tar.bz2"
+          && docker images
+      - name: Upload tarball of ${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }}
+        uses: actions/upload-artifact@v1
+        with:
+          name: docker-image-${{ env.DOCKER_TAG }}
+          path: ${{ env.BUILD_PATH }}
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        PYTHON: ['3.7']
+        DISTRO: [slim-buster]
+        BROWSER: [all]
+    env:
+      DOCKER_TAG: ${{ matrix.PYTHON }}-${{ matrix.DISTRO }}-${{ matrix.BROWSER }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Cache pip downloads
+        uses: actions/cache@v1
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/Pipfile.lock') }}
+      - name: Cache pipenv virtualenvs
+        id: pipenv-cache
+        uses: actions/cache@v1
+        with:
+          path: ~/.local/share/virtualenvs
+          key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
+      - name: Install pipenv
+        run: pip install --upgrade pipenv
+      - name: Install test dependencies
+        if: steps.pipenv-cache.outputs.cache-hit != 'true'
+        run: pipenv install --dev
+      - name: Download bz2 archive of ${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }}
+        uses: actions/download-artifact@v1
+        with:
+          name: docker-image-${{ env.DOCKER_TAG }}
+          path: ${{ env.BUILD_PATH }}
+      - name: Load ${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }}
+        run: bunzip2 --stdout "${BUILD_PATH}/${DOCKER_TAG}.tar.bz2" | docker load
+      - name: Run tests for ${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }}
+        run: pipenv run python verify_image.py
+
+  deploy:  # this job only runs on tags pushed to master by bump-version.yml
+    if: >-
+      (github.event_name == 'push' || github.event_name == 'schedule')
+      && github.ref == 'refs/heads/master'
+    needs: test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        PYTHON: ['3.7']
+        DISTRO: [slim-buster]
+        BROWSER: [all]
+    env:
+      DOCKER_TAG: ${{ matrix.PYTHON }}-${{ matrix.DISTRO }}-${{ matrix.BROWSER }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download bz2 archive of ${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }}
+        uses: actions/download-artifact@v1
+        with:
+          name: docker-image-${{ env.DOCKER_TAG }}
+          path: ${{ env.BUILD_PATH }}
+      - name: Load ${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }}
+        run: bunzip2 --stdout "${BUILD_PATH}/${DOCKER_TAG}.tar.bz2" | docker load
+      - name: Log in to Dockerhub
+        run: >-
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login
+          --username "${{ secrets.DOCKER_USER }}" --password-stdin
+      - name: Push ${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }} to Dockerhub
+        run: docker push "${DOCKER_IMAGE}:${DOCKER_TAG}"

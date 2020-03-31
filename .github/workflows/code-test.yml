@@ -1,0 +1,75 @@
+---
+# lint and test config and script files
+name: Code
+on: # yamllint disable-line rule:truthy
+  push:
+    paths-ignore:
+      - '**.md'
+      - '**/.gitignore'
+env:
+  # Nothing to do with the images, this is the version used by scripts/linters
+  PYTHON_VERSION: '3.8'
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Cache pip downloads
+        uses: actions/cache@v1
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/Pipfile.lock') }}
+      - name: Cache pipenv virtualenvs
+        id: pipenv-cache
+        uses: actions/cache@v1
+        with:
+          path: ~/.local/share/virtualenvs
+          key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
+      - name: Install pipenv
+        run: pip install --upgrade pipenv
+      - name: Install test dependencies
+        if: steps.pipenv-cache.outputs.cache-hit != 'true'
+        run: pipenv install --dev
+      - name: Run yamllint code linter
+        run: pipenv run yamllint --config-file=.yamllint .
+      - name: Run isort import sorter
+        run: pipenv run isort --settings-path=setup.cfg --check-only --diff
+      - name: Run black code formatter
+        run: pipenv run black --config=pyproject.toml --check --diff .
+      - name: Run pylama code linter
+        run: pipenv run pylama --options=setup.cfg .
+      - name: Run mypy type checker
+        run: pipenv run mypy --config-file=setup.cfg .
+
+  test:
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Cache pip downloads
+        uses: actions/cache@v1
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/Pipfile.lock') }}
+      - name: Cache pipenv virtualenvs
+        id: pipenv-cache
+        uses: actions/cache@v1
+        with:
+          path: ~/.local/share/virtualenvs
+          key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
+      - name: Install pipenv
+        run: pip install --upgrade pipenv
+      - name: Install test dependencies
+        if: steps.pipenv-cache.outputs.cache-hit != 'true'
+        run: pipenv install --dev
+      - name: Run pytest
+        run: pipenv run pytest --cov-config=setup.cfg --cov

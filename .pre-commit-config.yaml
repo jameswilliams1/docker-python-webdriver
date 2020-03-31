@@ -1,0 +1,68 @@
+---
+exclude: >-  # Git, venv and compiled package directories
+  (^|/)\.git($|/)|(^|/)\.tox($|/)|^docs($|/)|(^|/)build($|/)|(^|/)dist($|/)
+default_stages: [commit]
+fail_fast: true
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: master
+    hooks:
+      - id: trailing-whitespace
+        description: Trim trailing whitespace on non-markdown files.
+        args: [--markdown-linebreak-ext=md]
+
+      - id: mixed-line-ending
+        description: Remove Windows line endings from all files.
+        args: [--fix=lf]
+
+  - repo: https://github.com/asottile/seed-isort-config
+    rev: master
+    hooks:
+      - id: seed-isort-config
+        description: Populate isort 'known_third_party' packages in setup.cfg.
+
+  - repo: local
+    # Most of these have hooks available, but it's better to use local versions
+    # This way pip, pre-commit and CI/CD linter versions will always match
+    hooks:
+      - id: isort
+        name: isort
+        description: Run isort import sorting on python files.
+        entry: isort
+        args: [--settings-path=setup.cfg]
+        language: python
+        types: [python]
+
+      - id: black
+        name: black
+        description: Run Black code formatting on python files.
+        entry: black
+        args: [--config=pyproject.toml]
+        require_serial: true
+        language: system
+        types: [python]
+
+      - id: pylama
+        name: pylama
+        description: Run pylama code linting on python files.
+        entry: pylama
+        args: [--options=setup.cfg]
+        language: python
+        types: [python]
+
+      - id: mypy
+        name: mypy
+        description: Run mypy type checking on python files.
+        entry: mypy
+        args: [--config-file=setup.cfg]
+        language: python
+        types: [python]
+
+      - id: yamllint
+        name: yamllint
+        description: Run yamllint code linting on yaml files.
+        entry: yamllint
+        args: [--config-file=.yamllint]
+        language: python
+        types: [yaml]
