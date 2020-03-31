@@ -1,7 +1,11 @@
 ---
 # lint and test config and script files
 name: Code
-on: push  # yamllint disable-line rule:truthy
+on: # yamllint disable-line rule:truthy
+  push:
+    paths-ignore:
+      - '**.md'
+      - '**/.gitignore'
 env:
   # Nothing to do with the images, this is the version used by scripts/linters
   PYTHON_VERSION: '3.8'
