@@ -4,14 +4,18 @@
 #   '#major': 1.0.0
 #   '#minor': 0.1.0
 #   '#patch': 0.0.1
-
 name: Bump version
 on:  # yamllint disable-line rule:truthy
   push:
     branches:
       - master
+    paths:  # only bump if generated Dockerfiles will change
+      - 'scripts/**.py'
+      - '**/.dockerignore'
+      # TODO remove once generate scripts are written
+      - '**/Dockerfile'
 jobs:
-  bump:
+  bump-version:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2

@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # This file is useful only for local testing and is not part of the CI/CD,
-# nor is it used to create any output images.
+# nor is it used to generate any images uploaded to Dockerhub.
 #
 # Requires:
 #   - docker
