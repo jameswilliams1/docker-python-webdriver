@@ -1,13 +1,7 @@
 ---
-# lint and test config and code files
-name: Code
-on:  # yamllint disable-line rule:truthy
-  push:
-  # paths:
-  #   - '**.py'
-  #   - '**.yml'
-  #   - '**.yaml'
-
+# lint and test config and script files
+name: Generate
+on: push  # yamllint disable-line rule:truthy
 env:
   # Nothing to do with the images, this is the version used by scripts/linters
   PYTHON_VERSION: '3.8'
@@ -49,8 +43,8 @@ jobs:
         run: pipenv run mypy --config-file=setup.cfg .
 
   test:
-    runs-on: ubuntu-latest
     needs: lint
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python ${{ env.PYTHON_VERSION }}

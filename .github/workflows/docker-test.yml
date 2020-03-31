@@ -32,7 +32,8 @@ jobs:
         uses: docker://hadolint/hadolint:latest-debian
         with:
           entrypoint: hadolint
-          # Ignore 'pin versions in apt get install'
+          # TODO move ignore rules to config file
+          # Ignore DL3008: 'pin versions in apt get install'
           args: --ignore DL3008 ${{ env.DOCKERFILE_PATH }}
 
   build:
