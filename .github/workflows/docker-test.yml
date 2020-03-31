@@ -1,12 +1,13 @@
 ---
-# Lint, build and test Dockerfiles
+# Lint, build and test Dockerfiles, also deploy to Dockerhub if branch is master.
 name: Build
 on:  # yamllint disable-line rule:truthy
-  push:
-    paths:
-      - '**/Dockerfile'  # run on any change to a Dockerfile anywhere in repo
-      - '**/docker-test.yml'  # changes to this workflow
-      - '**/verify_image.py'  # changes to the verify script
+  pull_request:  # TODO types
+  push:  # immediately when a new tag is pushed to master
+    branches: master
+    tags: '*'
+  schedule:  # 6:10am every day on master
+    - cron: '10 06 * * *'
 
 env:
   DOCKER_IMAGE: jameswilliams1/python-webdriver
@@ -73,7 +74,7 @@ jobs:
         with:
           name: docker-image-${{ env.DOCKER_TAG }}
           path: ${{ env.BUILD_PATH }}
-  verify:
+  test:
     needs: build
     runs-on: ubuntu-latest
     strategy:
@@ -114,3 +115,32 @@ jobs:
         run: bunzip2 --stdout "${BUILD_PATH}/${DOCKER_TAG}.tar.bz2" | docker load
       - name: Run tests for ${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }}
         run: pipenv run python verify_image.py
+
+  deploy:  # this job only runs on tags pushed to master by bump-version.yml
+    if: >-
+      (github.event_name == 'push' || github.event_name == 'schedule')
+      && github.ref == 'refs/heads/master'
+    needs: test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        PYTHON: ['3.7']
+        DISTRO: [slim-buster]
+        BROWSER: [all]
+    env:
+      DOCKER_TAG: ${{ matrix.PYTHON }}-${{ matrix.DISTRO }}-${{ matrix.BROWSER }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download bz2 archive of ${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }}
+        uses: actions/download-artifact@v1
+        with:
+          name: docker-image-${{ env.DOCKER_TAG }}
+          path: ${{ env.BUILD_PATH }}
+      - name: Load ${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }}
+        run: bunzip2 --stdout "${BUILD_PATH}/${DOCKER_TAG}.tar.bz2" | docker load
+      - name: Log in to Dockerhub
+        run: >-
+          echo "${DOCKER_PASSWORD}" | docker login
+          --username "${DOCKER_USER}" --password-stdin
+      - name: Push ${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }} to Dockerhub
+        run: docker push "${DOCKER_IMAGE}:${DOCKER_TAG}"

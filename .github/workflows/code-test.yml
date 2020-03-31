@@ -1,6 +1,6 @@
 ---
 # lint and test config and script files
-name: Generate
+name: Code
 on: push  # yamllint disable-line rule:truthy
 env:
   # Nothing to do with the images, this is the version used by scripts/linters
