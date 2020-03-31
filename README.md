@@ -8,3 +8,5 @@
   <img src="https://img.shields.io/badge/code%20style-black-000000.svg" alt="Code style: black">
 </a><p><br>
   <strong>Dockerised python with webdrivers for Chrome and Firefox.</strong></p></div>
+
+_Note_: This project is a work in progress and currently only the `3.7-slim-buster-all` tag is supported, providing Chrome and Firefox.
