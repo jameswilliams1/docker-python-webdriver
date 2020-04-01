@@ -10,25 +10,6 @@ LABEL org.opencontainers.image.description="Dockerised python with webdrivers fo
 # Ensure any piped commands exit on error
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
-# Install the latest versions of Mozilla Firefox and Geckodriver
-RUN export DEBIAN_FRONTEND=noninteractive && apt-get update \
-  && apt-get install --no-install-recommends --no-install-suggests --assume-yes \
-    curl \
-    bzip2 \
-    libgtk-3-0 \
-    libdbus-glib-1-2 \
-  && FIREFOX_DOWNLOAD_URL='https://download.mozilla.org/?product=firefox-latest-ssl&os=linux64' \
-  && curl -sL "$FIREFOX_DOWNLOAD_URL" | tar -xj -C /opt \
-  && ln -s /opt/firefox/firefox /usr/local/bin/ \
-  && BASE_URL='https://github.com/mozilla/geckodriver/releases/download' \
-  && VERSION=$(curl -sL 'https://api.github.com/repos/mozilla/geckodriver/releases/latest' | grep tag_name | cut -d '"' -f 4) \
-  && curl -sL "${BASE_URL}/${VERSION}/geckodriver-${VERSION}-linux64.tar.gz" | tar -xz -C /usr/local/bin \
-  && apt-get purge -y \
-    curl \
-    bzip2 \
-  && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
-  && rm -rf /tmp/* /usr/share/doc/* /var/cache/* /var/lib/apt/lists/* /var/tmp/*
-
 # Install the latest versions of Google Chrome and Chromedriver
 # Patches Chrome launch script to disable /dev/shm and sandbox for use in docker
 RUN export DEBIAN_FRONTEND=noninteractive && apt-get update \
