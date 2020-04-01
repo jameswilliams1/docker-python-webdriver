@@ -22,7 +22,7 @@ jobs:
       matrix:
         PYTHON: ['3.7']
         DISTRO: [slim-buster]
-        BROWSER: [all]
+        BROWSER: [all, chrome]
     env:
       DOCKER_TAG: ${{ matrix.PYTHON }}-${{ matrix.DISTRO }}-${{ matrix.BROWSER }}
       DOCKERFILE_PATH: "./${{ matrix.PYTHON }}/${{ matrix.DISTRO }}/\
@@ -44,7 +44,7 @@ jobs:
       matrix:
         PYTHON: ['3.7']
         DISTRO: [slim-buster]
-        BROWSER: [all]
+        BROWSER: [all, chrome]
     env:
       DOCKER_TAG: ${{ matrix.PYTHON }}-${{ matrix.DISTRO }}-${{ matrix.BROWSER }}
       DOCKERFILE_PATH: "./${{ matrix.PYTHON }}/${{ matrix.DISTRO }}/\
@@ -81,7 +81,7 @@ jobs:
       matrix:
         PYTHON: ['3.7']
         DISTRO: [slim-buster]
-        BROWSER: [all]
+        BROWSER: [all, chrome]
     env:
       DOCKER_TAG: ${{ matrix.PYTHON }}-${{ matrix.DISTRO }}-${{ matrix.BROWSER }}
     steps:
@@ -126,7 +126,7 @@ jobs:
       matrix:
         PYTHON: ['3.7']
         DISTRO: [slim-buster]
-        BROWSER: [all]
+        BROWSER: [all, chrome]
     env:
       DOCKER_TAG: ${{ matrix.PYTHON }}-${{ matrix.DISTRO }}-${{ matrix.BROWSER }}
     steps:
