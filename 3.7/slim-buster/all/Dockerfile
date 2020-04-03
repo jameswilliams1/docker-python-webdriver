@@ -1,7 +1,7 @@
 FROM python:3.7-slim-buster
 
 LABEL org.opencontainers.image.authors="James Williams <jamesleighwilliams@gmail.com>"
-LABEL org.opencontainers.image.version="0.2.0"
+LABEL org.opencontainers.image.version="0.3.0"
 LABEL org.opencontainers.image.licenses="Apache License 2.0"
 LABEL org.opencontainers.image.url="https://github.com/jameswilliams1/docker-python-webdriver"
 LABEL org.opencontainers.image.title="Python Webdriver"

@@ -1,4 +1,4 @@
-FROM python:3.7-slim-buster
+FROM python:3.8-slim-buster
 
 LABEL org.opencontainers.image.authors="James Williams <jamesleighwilliams@gmail.com>"
 LABEL org.opencontainers.image.version="0.3.0"
