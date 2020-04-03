@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        PYTHON: ['3.7']
+        PYTHON: ['3.7', '3.8']
         DISTRO: [slim-buster]
         BROWSER: [all, chrome]
     env:
@@ -42,7 +42,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        PYTHON: ['3.7']
+        PYTHON: ['3.7', '3.8']
         DISTRO: [slim-buster]
         BROWSER: [all, chrome]
     env:
@@ -79,7 +79,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        PYTHON: ['3.7']
+        PYTHON: ['3.7', '3.8']
         DISTRO: [slim-buster]
         BROWSER: [all, chrome]
     env:
@@ -124,7 +124,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        PYTHON: ['3.7']
+        PYTHON: ['3.7', '3.8']
         DISTRO: [slim-buster]
         BROWSER: [all, chrome]
     env:
