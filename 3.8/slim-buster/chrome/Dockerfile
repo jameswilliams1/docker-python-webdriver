@@ -5,7 +5,7 @@ LABEL org.opencontainers.image.version="0.3.0"
 LABEL org.opencontainers.image.licenses="Apache License 2.0"
 LABEL org.opencontainers.image.url="https://github.com/jameswilliams1/docker-python-webdriver"
 LABEL org.opencontainers.image.title="Python Webdriver"
-LABEL org.opencontainers.image.description="Dockerised python with webdrivers for Chrome and Firefox."
+LABEL org.opencontainers.image.description="Dockerised python with Chrome webdriver."
 
 # Ensure any piped commands exit on error
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
