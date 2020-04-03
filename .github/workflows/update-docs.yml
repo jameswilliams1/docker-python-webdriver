@@ -1,0 +1,21 @@
+---
+# Update description on DockerHub when docs change in master
+name: Update Docs
+on:  # yamllint disable-line rule:truthy
+  push:
+    branches:
+      - master
+    paths:  # only run when README changes
+      - 'README.md'
+jobs:
+  update-description:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Update DockerHub description
+        uses: peter-evans/dockerhub-description@v2.1.1
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USER }}
+          DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          DOCKERHUB_REPOSITORY: jameswilliams1/python-webdriver
+          README_FILEPATH: README.md
