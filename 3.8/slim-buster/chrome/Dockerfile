@@ -17,6 +17,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && apt-get update \
     curl \
     unzip \
     gnupg \
+    xvfb \
   && CHROME_DOWNLOAD_URL='https://dl.google.com/linux' \
   && curl -sL "${CHROME_DOWNLOAD_URL}/linux_signing_key.pub" | apt-key add - \
   && curl -sL "${CHROME_DOWNLOAD_URL}/direct/google-chrome-stable_current_amd64.deb" > /tmp/chrome.deb \
