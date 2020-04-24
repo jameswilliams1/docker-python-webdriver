@@ -17,6 +17,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && apt-get update \
     bzip2 \
     libgtk-3-0 \
     libdbus-glib-1-2 \
+    xvfb \
   && FIREFOX_DOWNLOAD_URL='https://download.mozilla.org/?product=firefox-latest-ssl&os=linux64' \
   && curl -sL "$FIREFOX_DOWNLOAD_URL" | tar -xj -C /opt \
   && ln -s /opt/firefox/firefox /usr/local/bin/ \
