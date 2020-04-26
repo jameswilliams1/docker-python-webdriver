@@ -16,7 +16,7 @@ _Note_: This project is a work in progress and currently only the following tags
 - 3.8-slim-buster-all
 - 3.8-slim-buster-chrome
 
-This is the Git repo of the Docker image for [python-webdriver](https://hub.docker.com/r/jameswilliams1/python-webdriver, "python-webdriver on Docker Hub"). This image is a tool for scraping, testing or any other task that needs a [webdriver](https://www.w3.org/TR/webdriver/, "W3 Webdriver information") and a browser. Currently, there are images for [Google Chrome](https://www.google.co.uk/chrome/, "Google Chrome download page") with [Chromedriver](https://chromedriver.chromium.org/downloads, "Chromedriver download page"), [Mozilla Firefox](https://www.mozilla.org/en-GB/firefox/new/, "Mozilla Firefox download page") with [Geckodriver](https://github.com/mozilla/geckodriver/releases, "Geckodriver release page"), or both. Once the automated Dockerfile scripts are complete, the plan is to provide Chrome and Firefox along with most of the latest versions of python on Debian or Alpine.
+This is the Git repo of the Docker image for [python-webdriver](https://hub.docker.com/r/jameswilliams1/python-webdriver "python-webdriver on Docker Hub"). This image is a tool for scraping, testing or any other task that needs a [webdriver](https://www.w3.org/TR/webdriver/ "W3 Webdriver information") and a browser. Currently, there are images for [Google Chrome](https://www.google.co.uk/chrome/ "Google Chrome download page") with [Chromedriver](https://chromedriver.chromium.org/downloads "Chromedriver download page"), [Mozilla Firefox](https://www.mozilla.org/en-GB/firefox/new/ "Mozilla Firefox download page") with [Geckodriver](https://github.com/mozilla/geckodriver/releases "Geckodriver release page"), or both. Once the automated Dockerfile scripts are complete, the plan is to provide Chrome and Firefox along with most of the latest versions of python on Debian or Alpine.
 
 Updates are pushed daily for all images by an automated CI pipeline which builds, tests and releases at 06:10am every morning.
 
@@ -38,7 +38,7 @@ docker pull jameswilliams1/python-webdriver:3.8-slim-buster-all
 
 ## Usage
 
-This image runs as root by default. If you are using it in production your Dockerfile should change this. The image is primarily intended for use with the [Selenium WebDriver](https://selenium-python.readthedocs.io/getting-started.html, "Selenium WebDriver Python information page") python bindings. Selenium is not installed by default as this should generally be handled through a requirements file for your project. The chosen browser and webdriver are installed, and the system is configured to allow headless execution in Docker out of the box. Setup is similar to any other python image:
+This image runs as root by default. If you are using it in production your Dockerfile should change this. The image is primarily intended for use with the [Selenium WebDriver](https://selenium-python.readthedocs.io/getting-started.html "Selenium WebDriver Python information page") python bindings. Selenium is not installed by default as this should generally be handled through a requirements file for your project. The chosen browser and webdriver are installed, and the system is configured to allow headless execution in Docker out of the box. Setup is similar to any other python image:
 
 ```docker
 FROM jameswilliams1/python-webdriver:3.8-slim-buster-all
@@ -54,4 +54,4 @@ ENTRYPOINT ["./entrypoint.sh"]
 
 # Issues and Suggestions
 
-Please report any issues or feature suggestions on [the issues page](https://github.com/jameswilliams1/docker-python-webdriver/issues, "Github issues page").
+Please report any issues or feature suggestions on [the issues page](https://github.com/jameswilliams1/docker-python-webdriver/issues "Github issues page").
