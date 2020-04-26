@@ -1,6 +1,6 @@
 ---
-# Update description on DockerHub when docs change in master
-name: Update Docs
+# Update description on DockerHub when readme changes in master
+name: Docs
 on:  # yamllint disable-line rule:truthy
   push:
     branches:

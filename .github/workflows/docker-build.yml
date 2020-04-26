@@ -2,7 +2,13 @@
 # Lint, build and test Dockerfiles, also deploy to Dockerhub if branch is master.
 name: Build
 on:  # yamllint disable-line rule:truthy
-  pull_request:  # TODO types
+  pull_request:
+    types: ['opened', 'edited', 'reopened', 'synchronize']
+    paths:  # only run if generated Dockerfiles will change
+      - '**/.dockerignore'
+      - '**.py'
+      # TODO remove once generate scripts are written
+      - '**/Dockerfile'
   push:  # immediately when a new tag is pushed to master
     branches: master
     tags: '*'
@@ -33,7 +39,6 @@ jobs:
         uses: docker://hadolint/hadolint:latest-debian
         with:
           entrypoint: hadolint
-          # TODO move ignore rules to config file
           # Ignore DL3008: 'pin versions in apt get install'
           args: --ignore DL3008 ${{ env.DOCKERFILE_PATH }}
 
